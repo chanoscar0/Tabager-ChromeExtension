@@ -9,7 +9,6 @@ function retrieveTabs() {
     arrOfTabs.forEach((tabObject, index) => {
       //increment 'i' so that the colors array has a new element each iteration
       i++;
-      console.log(tabObject);
       //Button for Active Tab highlighting
       const tabId = tabObject.id;
       //Button for list item
