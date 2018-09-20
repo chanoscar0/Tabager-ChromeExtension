@@ -1,0 +1,28 @@
+body{
+    width: 300px;
+    height: auto;
+}
+.popup{
+    display: grid;
+    grid-template-columns: 10% 70% 20%;
+    grid-auto-rows: auto;
+}
+
+#addButton{
+    grid-column: 2 / 4;
+}
+.icon{
+    width: 15px;
+    height: 15px;
+    align-self: center;
+    margin-left: 7px;
+}
+.list-item{
+    font-size: .7em;
+    outline:none;
+    border-radius: 0;
+
+}
+.add-button{
+    font-weight: bold;
+}

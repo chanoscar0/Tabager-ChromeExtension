@@ -1,0 +1,11 @@
+{
+    "name": "Tabager™",
+    "version": "1.0",
+    "description": "Tab Management Tool",
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon" : "bowtie.png",
+        "default_popup": "index.html"},
+    "permissions"  : ["activeTab", "tabs"]
+}
+  
