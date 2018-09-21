@@ -1,68 +1,77 @@
 
-var colors = ['teal lighten-2', 'teal lighten-1', 'teal', 'teal darken-1','teal darken-2'];
-var i = 0;
+let colors = ['teal lighten-2', 'teal lighten-1', 'teal', 'teal darken-1', 'teal darken-2'];
+let i = 0;
 
-function retrieveTabs(){
-    //Grab Array of tab objects from chrome tabs query
-    chrome.tabs.query({currentWindow: true}, function(arrOfTabs){
-        //Iterate over Arr of Tabs creating 2 new DOM Button elements per Tab
-        arrOfTabs.forEach(function(tabObject, index){
-            i++;
-            console.log(tabObject);
-            //Button for Active Tab highlighting
-            let tabId = tabObject.id;
-            let listItem = document.createElement('button');
-            //Button for tab deletion
-            let deleteButton = document.createElement('button');
-            let icon = document.createElement('img');
-            icon.className = "icon";
-            icon.id = "icon" + index;
-            deleteButton.id = "button" + index;
-            if(index % 5 === 0) {
-                colors = colors.reverse();
-            }
-            deleteButton.className = "list-item waves-effect waves-light btn-small " + colors[index % 5];
-            listItem.id = "link" + index;
-            listItem.className = "waves-effect waves-light btn-small list-item " + colors[index % 5];
-            console.log(listItem.className);
-            icon.src = tabObject.favIconUrl; 
-            listItem.innerHTML = tabObject.title;
+function retrieveTabs() {
+  //Grab Array of tab objects from chrome tabs query
+  chrome.tabs.query({ currentWindow: true }, (arrOfTabs) => {
+    //Iterate over Arr of Tabs creating 2 new DOM Button elements per Tab
+    arrOfTabs.forEach((tabObject, index) => {
+      //increment 'i' so that the colors array has a new element each iteration
+      i++;
+      //Button for Active Tab highlighting
+      const tabId = tabObject.id;
+      //Button for list item
+      const listItem = document.createElement('button');
+      //Button for tab deletion
+      const deleteButton = document.createElement('button');
+      //Favicon image
+      const icon = document.createElement('img');
+      //Change class name to manipulate in css
+      icon.className = 'icon';
+      //add an id so that favicon html is tied to a uniform id if needed to analyze
+      icon.id = 'icon' + index;
+      //add an id so that delete button html is tied to a uniform id if needed to analyze
+      deleteButton.id = 'button' + index;
+      //reverse the array of colors so that the color change flips at the end
+      if(index % 5 === 0) {
+        colors = colors.reverse();
+      }
+      //set the class name to Google Materialize CSS
+      deleteButton.className = 'list-item waves-effect waves-light btn-small ' + colors[index % 5];
+      //add an id so that listItem button html is tied to a uniform id if needed to analyze
+      listItem.id = 'link' + index;
+      //set the class name to Google Materialize CSS
+      listItem.className = 'waves-effect waves-light btn-small list-item ' + colors[index % 5];
+      //set the source for the icon to be the faviconurl found in the tabobject
+      icon.src = tabObject.favIconUrl;
+      //set the inner html of list item to be the title of each tabobject
+      listItem.innerHTML = tabObject.title;
+      //set the inner html of list item to be the title
+      deleteButton.innerHTML = 'Delete';
+      //Setting up event listener on list buttons for active tab highlighting
+      listItem.addEventListener('click', () => {
+        chrome.tabs.highlight({ tabs: index });
+      });
+      //Setting up event listener on delete buttons to remove the tab and the HTML tied to that tab
+      deleteButton.addEventListener('click', () => {
+        chrome.tabs.remove(tabId);
+        icon.parentNode.removeChild(icon);
+        listItem.parentNode.removeChild(listItem);
+        deleteButton.parentNode.removeChild(deleteButton);
+      });
 
-            deleteButton.innerHTML = "Delete";
-            //Setting up event listeners on buttons for active tab highlighting
-            listItem.addEventListener('click', function(){
-                chrome.tabs.highlight({tabs: index});
-            })
-            deleteButton.addEventListener('click', function(){
-                chrome.tabs.remove(tabId);
-                icon.parentNode.removeChild(icon);
-                listItem.parentNode.removeChild(listItem);
-                deleteButton.parentNode.removeChild(deleteButton);
-            })
-            // previewButton.addEventListener('click', function(){
-
-            // })
-            //Append to the DOM
-            document.getElementById("container").append(icon);
-            document.getElementById("container").append(listItem);
-            document.getElementById("container").append(deleteButton);
-        });
-
-        let addButton = document.createElement('button');
-        addButton.id = "addButton";
-        addButton.innerHTML = "+";
-        addButton.className = "waves-effect waves-light btn-small add-button" + colors[i % 5];
-        addButton.addEventListener('click',function(){
-            chrome.tabs.create({active: true})
-        });
-        document.getElementById("container").append(addButton);
+      //Append to the DOM container which is a grid
+      document.getElementById('container').append(icon);
+      document.getElementById('container').append(listItem);
+      document.getElementById('container').append(deleteButton);
     });
+    
+    //create the add button at the bottom of the container
+    const addButton = document.createElement('button');
+    //give the add button an id to manipulate in CSS
+    addButton.id = 'addButton';
+    //set the add button inner html to be a '+' sign
+    addButton.innerHTML = '+';
+    //set the class name to Google Materialize CSS
+    addButton.className = 'waves-effect waves-light btn-small add-button' + colors[i % 5];
+    //add an event listener that creates a new tab when the add button is pressed
+    addButton.addEventListener('click', () => {
+      chrome.tabs.create({active: true})
+    });
+    //append the add button to the container grid
+    document.getElementById('container').append(addButton);
+  });
 }
+//run the function
 retrieveTabs();
-
-//Function used to parse out the Domain name from the URL.
-function getDomainName(url){
-    var a = document.createElement('a');
-    a.setAttribute('href',url);
-    return a.hostname.replace('www.','').replace('.com','').replace('.org','');
-}
